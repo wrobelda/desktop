@@ -303,7 +303,7 @@ AccountSettings::AccountSettings(AccountState *accountState, QWidget *parent)
 
 void AccountSettings::slotE2eEncryptionMnemonicReady()
 {
-    const auto actionDisableEncryption = addActionToEncryptionMessage(tr("Disable encryption"), e2EeUiActionDisableEncryptionId);
+    const auto actionDisableEncryption = addActionToEncryptionMessage(tr("Disable encryption on this account"), e2EeUiActionDisableEncryptionId);
     connect(actionDisableEncryption, &QAction::triggered, this, [this] {
         disableEncryptionForAccount(_accountState->account());
     });
@@ -320,7 +320,7 @@ void AccountSettings::slotE2eEncryptionMnemonicReady()
     }
 
     _ui->encryptionMessage->setMessageType(KMessageWidget::Positive);
-    _ui->encryptionMessage->setText(tr("End-to-end encryption has been enabled for this account"));
+    _ui->encryptionMessage->setText(tr("'Encrypt' a folder to end-to-end encrypt any new files added to it."));
     _ui->encryptionMessage->setIcon(Theme::createColorAwareIcon(QStringLiteral(":/client/theme/lock.svg")));
     _ui->encryptionMessage->show();
 }
@@ -1632,9 +1632,9 @@ void AccountSettings::refreshSelectiveSyncStatus()
     QString infoString;
 
     if (!unsyncedFoldersString.isEmpty()) {
-        infoString += !cfg.confirmExternalStorage() ? tr("There are folders that were not synchronized because they are too big: ")
-            : !cfg.newBigFolderSizeLimit().first    ? tr("There are folders that were not synchronized because they are external storages: ")
-                                                    : tr("There are folders that were not synchronized because they are too big or external storages: ");
+        infoString += !cfg.confirmExternalStorage() ? tr("Some folders failed to synchronize because they are too big: ")
+            : !cfg.newBigFolderSizeLimit().first    ? tr("Some folders failed to synchronize because they are external storages: ")
+                                                    : tr("Some folders failed to synchronize because they are too big or are external storages: ");
 
         infoString += unsyncedFoldersString;
     }
@@ -1645,7 +1645,7 @@ void AccountSettings::refreshSelectiveSyncStatus()
         }
 
         const auto folderSizeLimitString = QString::number(cfg.newBigFolderSizeLimit().second);
-        infoString += tr("There are folders that have grown in size beyond %1MB: %2").arg(folderSizeLimitString, becameBigFoldersString);
+        infoString += tr("Some folders have grown in size beyond %1MB: %2").arg(folderSizeLimitString, becameBigFoldersString);
     }
 
     _ui->selectiveSyncNotification->setText(infoString);
@@ -1696,11 +1696,9 @@ void AccountSettings::initializeE2eEncryption()
 
         connect(_accountState->account()->e2e(), &ClientSideEncryption::initializationFinished, this, [this] {
             if (!_accountState->account()->e2e()->getPublicKey().isNull()) {
-                _ui->encryptionMessage->setText(tr("End-to-end encryption has been enabled on this account with another device."
+                _ui->encryptionMessage->setText(tr("End-to-end encryption has been set up on this account with another device."
                                                    "<br>"
-                                                   "It can be enabled on this device by entering your mnemonic."
-                                                   "<br>"
-                                                   "This will enable synchronisation of existing encrypted folders."));
+                                                   "Enter the unique mnemonic to have any encrypted folders synchronize on this device as well."));
             }
         });
         _accountState->account()->setE2eEncryptionKeysGenerationAllowed(false);
@@ -1755,7 +1753,7 @@ QAction *AccountSettings::addActionToEncryptionMessage(const QString &actionTitl
 void AccountSettings::initializeE2eEncryptionSettingsMessage()
 {
     _ui->encryptionMessage->setMessageType(KMessageWidget::Information);
-    _ui->encryptionMessage->setText(tr("This account supports end-to-end encryption"));
+    _ui->encryptionMessage->setText(tr("You can enable end-to-end encryption on this account, but it needs to the set up first."));
     _ui->encryptionMessage->setIcon(Theme::createColorAwareIcon(QStringLiteral(":/client/theme/black/state-info.svg")));
     _ui->encryptionMessage->hide();
 
