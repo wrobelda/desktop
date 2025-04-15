@@ -256,6 +256,14 @@ public:
     [[nodiscard]] static QString discoveredLegacyConfigPath();
     static void setDiscoveredLegacyConfigPath(const QString &discoveredLegacyConfigPath);
 
+    static const QString isVfsEnabledC;
+    static const QString launchOnSystemStartupC;
+    static const QString optionalServerNotificationsC;
+    static const QString promptDeleteC;
+    static const QString showCallNotificationsC;
+    static const QString showChatNotificationsC;
+    static const QString showInExplorerNavigationPaneC;
+
 protected:
     [[nodiscard]] QVariant getPolicySetting(const QString &policy, const QVariant &defaultValue = QVariant()) const;
     void storeData(const QString &group, const QString &key, const QVariant &value);
